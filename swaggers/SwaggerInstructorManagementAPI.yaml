@@ -1,0 +1,172 @@
+openapi: 3.0.1
+info:
+  title: Instructor Management API
+  description: API to manage instructors, courses, and wages
+  version: 1.0.0
+
+paths:
+  /instructors:
+    get:
+      summary: Get list of instructors
+      operationId: getInstructors
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: origin
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of instructors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstructorList'
+
+    post:
+      summary: Add a new instructor
+      operationId: addInstructor
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: origin
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instructor'
+      responses:
+        '201':
+          description: Instructor created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+
+  /instructors/{id}:
+    get:
+      summary: Get an instructor by ID
+      operationId: getInstructorById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: origin
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Instructor details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+        '404':
+          description: Instructor not found
+
+components:
+  schemas:
+    InstructorList:
+      type: object
+      properties:
+        instructors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instructor'
+      required:
+        - instructors
+      example:
+        instructors:
+          - id: 1
+            fullName: Alice Johnson
+            course:
+              id: 201
+              title: Physics
+            wage:
+              total: 70000
+              currency: EUR
+          - id: 2
+            fullName: Bob Brown
+            course:
+              id: 202
+              title: Chemistry
+            wage:
+              total: 75000
+              currency: EUR
+
+    Instructor:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        course:
+          $ref: '#/components/schemas/Course'
+        wage:
+          $ref: '#/components/schemas/Wage'
+      required:
+        - id
+        - fullName
+        - course
+        - wage
+      example:
+        id: 1
+        fullName: Alice Johnson
+        course:
+          id: 201
+          title: Physics
+        wage:
+          total: 70000
+          currency: EUR
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+      required:
+        - id
+        - title
+      example:
+        id: 201
+        title: Physics
+
+    Wage:
+      type: object
+      properties:
+        total:
+          type: number
+          format: float
+        currency:
+          type: string
+      required:
+        - total
+        - currency
+      example:
+        total: 70000
+        currency: EUR

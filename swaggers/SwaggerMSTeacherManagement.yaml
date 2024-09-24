@@ -1,0 +1,172 @@
+openapi: 3.0.1
+info:
+  title: Teacher Management API
+  description: API to manage teachers, subjects, and salaries
+  version: 1.0.0
+
+paths:
+  /teachers:
+    get:
+      summary: Get list of teachers
+      operationId: getTeachers
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: origin
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of teachers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherList'
+
+    post:
+      summary: Add a new teacher
+      operationId: addTeacher
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: origin
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+      responses:
+        '201':
+          description: Teacher created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+
+  /teachers/{id}:
+    get:
+      summary: Get a teacher by ID
+      operationId: getTeacherById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: origin
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Teacher details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        '404':
+          description: Teacher not found
+
+components:
+  schemas:
+    TeacherList:
+      type: object
+      properties:
+        teachers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Teacher'
+      required:
+        - teachers
+      example:
+        teachers:
+          - id: 1
+            name: John Doe
+            subject:
+              id: 101
+              name: Mathematics
+            salary:
+              amount: 55000
+              currency: USD
+          - id: 2
+            name: Jane Smith
+            subject:
+              id: 102
+              name: English
+            salary:
+              amount: 60000
+              currency: USD
+
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        subject:
+          $ref: '#/components/schemas/Subject'
+        salary:
+          $ref: '#/components/schemas/Salary'
+      required:
+        - id
+        - name
+        - subject
+        - salary
+      example:
+        id: 1
+        name: John Doe
+        subject:
+          id: 101
+          name: Mathematics
+        salary:
+          amount: 55000
+          currency: USD
+
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+      example:
+        id: 101
+        name: Mathematics
+
+    Salary:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+        currency:
+          type: string
+      required:
+        - amount
+        - currency
+      example:
+        amount: 55000
+        currency: USD
