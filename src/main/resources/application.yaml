@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: ms-teachers-management
+  cloud:
+    openfeign:
+      httpClient:
+        disable-ssl-validation: true
+        enabled: false
+      okhttp:
+        enabled: true  #Required to use PATCH
+      client:
+        config:
+          default:
+            connectTimeout: 30000
+            readTimeout: 30000
+            loggerLevel: full
+          teacher-management:
+            url: "${INSTRUCTOR_MANAGEMENT_URL:http://localhost:8089}"
+            read-timeout: 30000
+            connect-timeout: 30000
+  kafka:
+    client-id: ${spring.application.name}
+    bootstrap-servers:
+      - "${KAFKA_SERVER:localhost:9092}"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topics:
+      teacher-info: ${TOPIC_TEACHER_INFO:teacher-info-topic}
+
+server:
+  port: 8080
+  servlet:
+    context-path: "/${APPLICATION_PREFIX:ms-teachers-management/v1}"
