@@ -1,7 +1,9 @@
 ## Microservice for Teachers Management.
 
 ### Description
-This system uses a feign client to map Instructors to Teachers.
+This system uses a feign client to map Instructors to Teachers. Made using a variation of Hexagonal architecture. 
+This is the producer.
+That is the <a href="https://github.com/guigann/ms-teachers-management-consumer" target="_blank"> consumer</a>.
 
 ### How to Run
 1. Clone the repository
