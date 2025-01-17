@@ -2,6 +2,7 @@ package com.guigan.ms_teachers_management.infrastructure.event.kafka;
 
 import com.guigan.kafka.contracts.Event;
 import com.guigan.ms_teachers_management.core.port.out.SendEventProducerPortOut;
+import com.guigan.ms_teachers_management.core.port.out.dto.TeacherDtoOutput;
 import com.guigan.ms_teachers_management.core.port.out.dto.TeacherListDtoOutput;
 import com.guigan.ms_teachers_management.infrastructure.event.kafka.mapper.KafkaMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 
 
 @Slf4j
@@ -30,6 +32,15 @@ public class SendEventProducer implements SendEventProducerPortOut {
 
         Event event = mapper.createEvent(teacher);
 
+        this.writeEventOnTopic(event);
+    }
+
+    @Override
+    public void sendTeacherInfoEvent(TeacherDtoOutput teacher) {
+        TeacherListDtoOutput teacherList = new TeacherListDtoOutput();
+        teacherList.setTeachers(List.of(teacher));
+
+        Event event = mapper.createEvent(teacherList);
         this.writeEventOnTopic(event);
     }
 

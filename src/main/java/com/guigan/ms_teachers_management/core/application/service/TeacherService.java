@@ -22,9 +22,9 @@ public class TeacherService implements TeacherPortIn {
 
     @Override
     public TeacherListDto list(String authorization, String origin) {
-        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Executar a chamada da API de TeacherMananger");
+        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Executando a chamada da API de TeacherManagement");
         var teacherListOutput = instructorManagerPortOut.get(authorization, origin);
-        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Chamada à API de TeacherMananger realizada com sucesso");
+        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Chamada a API de TeacherManagement realizada com sucesso");
 
         sendEventProducerPortOut.sendTeacherInfoEvent(teacherListOutput);
 
@@ -33,18 +33,22 @@ public class TeacherService implements TeacherPortIn {
 
     @Override
     public TeacherDto list(String authorization, String origin, Integer id) {
-        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Executar a chamada da API de TeacherMananger");
+        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Executando a chamada da API de TeacherManagement");
         var teacherOutput = instructorManagerPortOut.getById(authorization, origin, id);
-        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Chamda à API de TeacherMananger realizada com sucesso");
+        log.info("[SERVICE - teacherManangerPortOut.getTeachers] - Chamada a API de TeacherManagement realizada com sucesso");
+
+        sendEventProducerPortOut.sendTeacherInfoEvent(teacherOutput);
 
         return modelMapper.map(teacherOutput, TeacherDto.class);
     }
 
     @Override
     public TeacherDto save(String authorization, String origin, Instructor instructor) {
-        log.info("[SERVICE - teacherManangerPortOut.save] - Executar a chamada da API de TeacherMananger");
+        log.info("[SERVICE - teacherManangerPortOut.save] - Executando a chamada da API de TeacherManagement");
         var teacherOutput = instructorManagerPortOut.save(authorization, origin, instructor);
-        log.info("[SERVICE - teacherManangerPortOut.save] - Chamda à API de TeacherMananger realizada com sucesso");
+        log.info("[SERVICE - teacherManangerPortOut.save] - Chamada a API de TeacherManagement realizada com sucesso");
+
+        sendEventProducerPortOut.sendTeacherInfoEvent(teacherOutput);
 
         return modelMapper.map(teacherOutput, TeacherDto.class);
     }
