@@ -1,44 +1,31 @@
 package com.guigan.ms_teachers_management.core.application.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.guigan.ms_teachers_management.core.port.in.dto.SalaryDto;
 import com.guigan.ms_teachers_management.core.port.in.dto.SubjectDto;
 import com.guigan.ms_teachers_management.core.port.in.dto.TeacherDto;
+import com.guigan.ms_teachers_management.core.port.in.dto.TeacherListDto;
 import com.guigan.ms_teachers_management.core.port.out.InstructorManagerPortOut;
 import com.guigan.ms_teachers_management.core.port.out.SendEventProducerPortOut;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.guigan.ms_teachers_management.core.port.out.dto.SubjectDtoOutput;
+import com.guigan.ms_teachers_management.core.port.out.dto.TeacherDtoOutput;
+import com.guigan.ms_teachers_management.core.port.out.dto.TeacherListDtoOutput;
+import com.guigan.ms_teachers_management.infrastructure.rest.instructor_management.feign.dto.Course;
+import com.guigan.ms_teachers_management.infrastructure.rest.instructor_management.feign.dto.Instructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-public class TeacherServiceTest {
+import java.util.List;
 
-    private static final String AUTHORIZATION = "Basic dGVzdDp0ZXN0MTIz";
-    private static final String ORIGIN = "http://localhost:8080";
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    private Integer ID;
-    private TeacherDto TEACHER;
+@ExtendWith(MockitoExtension.class)
+class TeacherServiceTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @InjectMocks
-    private TeacherService service;
     @Mock
     private InstructorManagerPortOut instructorManagerPortOut;
     @Mock
@@ -46,58 +33,109 @@ public class TeacherServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    private TeacherService service;
+
+    private String AUTHORIZATION;
+    private String ORIGIN;
+    private Integer ID;
+    private TeacherListDtoOutput teacherListDtoOutput;
+    private TeacherListDto teacherListDto;
+    private TeacherDtoOutput teacherDtoOutput;
+    private TeacherDto teacherDto;
+    private Instructor instructor;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        service = new TeacherService(instructorManagerPortOut, sendEventProducerPortOut,
+                modelMapper);
+
         startMocks();
     }
 
     @Test
     void shouldReturnAListOfTeachersWhenAuthorizationAndOriginIsProvided() {
-        try {
-            mockMvc.perform(get("/teachers")
-                            .header("Authorization", AUTHORIZATION)
-                            .header("Origin", ORIGIN))
-                    .andExpect(status().isOk());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        when(instructorManagerPortOut.get(AUTHORIZATION, ORIGIN)).thenReturn(teacherListDtoOutput);
+        when(modelMapper.map(teacherListDtoOutput, TeacherListDto.class)).thenReturn(teacherListDto);
 
+        TeacherListDto result = service.list(AUTHORIZATION, ORIGIN);
+
+        assertThat(result).isEqualTo(teacherListDto);
+        verify(sendEventProducerPortOut).sendTeacherInfoEvent(teacherListDtoOutput);
+    }
+
+    @Test
+    void shouldReturnNullWhenNoTeachersAreAvailable() {
+        when(instructorManagerPortOut.get(AUTHORIZATION, ORIGIN)).thenReturn(new TeacherListDtoOutput());
+        when(modelMapper.map(new TeacherListDtoOutput(), TeacherListDto.class)).thenReturn(new TeacherListDto());
+
+        TeacherListDto result = service.list(AUTHORIZATION, ORIGIN);
+
+        assertThat(result.getTeachers()).isNull();
+        verify(sendEventProducerPortOut).sendTeacherInfoEvent(new TeacherListDtoOutput());
     }
 
     @Test
     void shouldReturnATeacherWhenAuthorizationOriginAndIdIsProvided() {
-        try {
-            mockMvc.perform(get("/teachers/{id}", ID)
-                            .header("Authorization", AUTHORIZATION)
-                            .header("Origin", ORIGIN))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(ID));
+        when(instructorManagerPortOut.getById(AUTHORIZATION, ORIGIN, ID)).thenReturn(teacherDtoOutput);
+        when(modelMapper.map(teacherDtoOutput, TeacherDto.class)).thenReturn(teacherDto);
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        TeacherDto result = service.list(AUTHORIZATION, ORIGIN, ID);
+
+        assertThat(result).isEqualTo(teacherDto);
+        verify(sendEventProducerPortOut).sendTeacherInfoEvent(teacherDtoOutput);
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenTeacherIdDoesNotExist() {
+        when(instructorManagerPortOut.getById(AUTHORIZATION, ORIGIN, ID)).thenReturn(null);
+
+        TeacherDto result = service.list(AUTHORIZATION, ORIGIN, ID);
+
+        assertThat(result).isNull();
     }
 
     @Test
     void shouldSaveATeacherWhenAuthorizationOriginAndTheTeacherIsProvided() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            mockMvc.perform(post("/teachers")
-                            .header("Authorization", AUTHORIZATION)
-                            .header("Origin", ORIGIN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(TEACHER)))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.id").value(TEACHER.getId()));
+        when(instructorManagerPortOut.save(AUTHORIZATION, ORIGIN, instructor)).thenReturn(teacherDtoOutput);
+        when(modelMapper.map(teacherDtoOutput, TeacherDto.class)).thenReturn(teacherDto);
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        TeacherDto result = service.save(AUTHORIZATION, ORIGIN, instructor);
+
+        assertThat(result).isEqualTo(teacherDto);
+        verify(sendEventProducerPortOut).sendTeacherInfoEvent(teacherDtoOutput);
     }
 
-    private void startMocks() {
+    private void startMocks(){
+        AUTHORIZATION = "Basic dGVzdDp0ZXN0MTIz";
+        ORIGIN = "http://localhost:8080";
         ID = 1;
-        TEACHER = new TeacherDto(1, "John Doe", new SubjectDto(101, "Mathematics"), new SalaryDto(55000f, "USD"));
+
+        teacherListDtoOutput = new TeacherListDtoOutput();
+        teacherDtoOutput = new TeacherDtoOutput();
+        teacherDtoOutput.setId(0);
+        teacherDtoOutput.setName("name");
+        SubjectDtoOutput subjectDtoOutput = new SubjectDtoOutput();
+        subjectDtoOutput.setId(0);
+        subjectDtoOutput.setName("name");
+        teacherDtoOutput.setSubject(subjectDtoOutput);
+        teacherListDtoOutput.setTeachers(List.of(teacherDtoOutput));
+
+        teacherListDto = new TeacherListDto();
+        teacherDto = new TeacherDto();
+        teacherDto.setId(0);
+        teacherDto.setName("name");
+        SubjectDto subjectDto = new SubjectDto();
+        subjectDto.setId(0);
+        subjectDto.setName("name");
+        teacherDto.setSubject(subjectDto);
+        teacherListDto.setTeachers(List.of(teacherDto));
+
+        instructor = new Instructor();
+        instructor.setId(0);
+        instructor.setFullName("fullName");
+        Course course = new Course();
+        course.setId(0);
+        course.setTitle("title");
+        instructor.setCourse(course);
     }
 }
