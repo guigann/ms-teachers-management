@@ -29,6 +29,6 @@ spring:
       teacher-info: ${TOPIC_TEACHER_INFO:teacher-info-topic}
 
 server:
-  port: 8080
+  port: 8082
   servlet:
     context-path: "/${APPLICATION_PREFIX:ms-teachers-management/v1}"
