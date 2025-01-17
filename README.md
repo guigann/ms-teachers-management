@@ -1,7 +1,9 @@
 ## Microservice for Teachers Management.
 
 ### Description
-This system uses a feign client to map Instructors to Teachers.
+This system uses a feign client to map Instructors to Teachers. Made using a variation of Hexagonal architecture. <br>
+This is the producer.<br>
+That is the <a href="https://github.com/guigann/ms-teachers-management-consumer" target="_blank"> consumer</a>. <br>
 
 ### How to Run
 1. Clone the repository
@@ -22,9 +24,9 @@ docker-compose -f docker-compose.yml up
 ```
 > **Note:** Make sure to run the above commands in the **project root directory**.
 4. Mock the Instructors Service with SoapUI. Follow the steps bellow:
-    1. Create the Mock Service like this:
-<br /> ![img](https://github.com/user-attachments/assets/29b26efb-01fe-4910-8c58-802b84253f1a)<br />
-    2. Provide valids responses to all endpoints according to Swagger.    
+   1. Create the Mock Service like this:
+      <br /> ![img](https://github.com/user-attachments/assets/29b26efb-01fe-4910-8c58-802b84253f1a)<br />
+   2. Provide valids responses to all endpoints according to Swagger.
 
 5. Finally, run the project and enjoy :)
 ## Swaggers
