@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="d6fea2a1-4725-46e3-86f9-9ee6447a901a" activeEnvironment="Default" name="Project 1" resourceRoot="${projectDir}" soapui-version="5.8.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="d6bc4ff3-ce34-46f8-8945-a973bd6a5be2" wadlVersion="http://wadl.dev.java.net/2009/02" name="Instructor Management API" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:description>API to manage instructors, courses, and wages</con:description><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="/instructors" path="/instructors" id="e7107d28-a089-4e04-b379-55e322b34570"><con:settings/><con:parameters/><con:method name="getInstructors" id="3c07b6a6-026c-46ce-8f61-66e86907ee0c" method="GET"><con:description>&#13;
+Get list of instructors</con:description><con:settings/><con:parameters><con:parameter required="true"><con:name>Authorization</con:name><con:style>HEADER</con:style><con:description xsi:nil="true"/></con:parameter><con:parameter required="true"><con:name>origin</con:name><con:style>HEADER</con:style><con:description xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:request name="Request 1" id="ed56f588-5156-4797-ad4d-0eb117a43c46" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8089</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder><con:entry>Authorization</con:entry><con:entry>origin</con:entry></con:parameterOrder></con:request></con:method><con:method name="addInstructor" id="603bd51d-53b1-4ccf-956f-828a0ec9bc27" method="POST"><con:description>&#13;
+Add a new instructor</con:description><con:settings/><con:parameters><con:parameter required="true"><con:name>Authorization</con:name><con:style>HEADER</con:style><con:description xsi:nil="true"/></con:parameter><con:parameter required="true"><con:name>origin</con:name><con:style>HEADER</con:style><con:description xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>201</con:status><con:params/></con:representation><con:request name="Request 1" id="17cbb68d-b447-41fd-a377-776dd3e11aed" mediaType="application/json"><con:settings/><con:parameters/><con:parameterOrder><con:entry>Authorization</con:entry><con:entry>origin</con:entry></con:parameterOrder></con:request></con:method></con:resource><con:resource name="/instructors/{id}" path="/instructors/{id}" id="6bef401b-9d8b-427a-a6a6-2a0898c6c8b7"><con:settings/><con:parameters><con:parameter required="true"><con:name>id</con:name><con:style>TEMPLATE</con:style><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="getInstructorById" id="7e6cc3ff-afbd-48a1-aa20-b891b572fb91" method="GET"><con:description>&#13;
+Get an instructor by ID</con:description><con:settings/><con:parameters><con:parameter required="true"><con:name>Authorization</con:name><con:style>HEADER</con:style><con:description xsi:nil="true"/></con:parameter><con:parameter required="true"><con:name>origin</con:name><con:style>HEADER</con:style><con:description xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>404</con:status><con:params/></con:representation><con:request name="Request 1" id="77dd99d1-4dc5-46e8-978d-c3d4bf40da68" mediaType="application/json"><con:settings/><con:parameters/></con:request></con:method></con:resource></con:interface><con:restMockService id="3fb1ae9f-c94e-4d29-8067-e9bcc113daf8" port="8089" path="/" host="GUILHERME-SYSMAP" name="REST MockService 1" docroot=""><con:settings/><con:properties/><con:restMockAction name="/instructors" method="GET" resourcePath="/instructors" id="54f4dc04-d22e-495a-8c64-7fc8bdf99577"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchPath>/*&#13;
+// Script dispatcher is used to select a response based on the incoming request.&#13;
+// Here are few examples showing how to match based on path, query param, header and body&#13;
+&#13;
+// Match based on path&#13;
+def requestPath = mockRequest.getPath()&#13;
+log.info "Path: "+ requestPath&#13;
+&#13;
+if( requestPath.contains("json") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on query parameter&#13;
+def queryString = mockRequest.getRequest().getQueryString()&#13;
+log.info "QueryString: " + queryString&#13;
+&#13;
+if( queryString.contains("stockholm") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+}&#13;
+else if( queryString.contains("london") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on header&#13;
+def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+&#13;
+if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on body&#13;
+def requestBody = mockRequest.getRequestContent()&#13;
+log.info "Request body: " + requestBody&#13;
+&#13;
+if( requestBody.contains("some data") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+}&#13;
+*/&#13;
+</con:dispatchPath><con:response name="Response 1" id="de5bd136-ed60-47f9-aa83-ce29d6d1a60f" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{
+  "instructors": [
+    {
+      "id": 1,
+      "fullName": "John Doe",
+      "course": {
+        "id": 101,
+        "title": "Mathematics"
+      },
+      "wage": {
+        "total": 55000,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": 2,
+      "fullName": "Jane Smith",
+      "course": {
+        "id": 102,
+        "title": "English"
+      },
+      "wage": {
+        "total": 60000,
+        "currency": "USD"
+      }
+    }
+  ]
+}</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/instructors/1" method="GET" resourcePath="/instructors/1" id="38aa8006-64d3-41ed-9547-760d6c9b43e3"><con:settings/><con:defaultResponse xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchPath>/*&#13;
+// Script dispatcher is used to select a response based on the incoming request.&#13;
+// Here are few examples showing how to match based on path, query param, header and body&#13;
+&#13;
+// Match based on path&#13;
+def requestPath = mockRequest.getPath()&#13;
+log.info "Path: "+ requestPath&#13;
+&#13;
+if( requestPath.contains("json") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on query parameter&#13;
+def queryString = mockRequest.getRequest().getQueryString()&#13;
+log.info "QueryString: " + queryString&#13;
+&#13;
+if( queryString.contains("stockholm") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+}&#13;
+else if( queryString.contains("london") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on header&#13;
+def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+&#13;
+if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on body&#13;
+def requestBody = mockRequest.getRequestContent()&#13;
+log.info "Request body: " + requestBody&#13;
+&#13;
+if( requestBody.contains("some data") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+}&#13;
+*/&#13;
+</con:dispatchPath><con:response name="Response 1" id="c2197b04-f3d7-4d4e-8eff-e1c1393ba008" httpResponseStatus="200" mediaType="application/json"><con:settings/><con:responseContent>{
+  "id": 1,
+  "fullName": "Alice Johnson",
+  "course": {
+    "id": 201,
+    "title": "Physics"
+  },
+  "wage": {
+    "total": 70000,
+    "currency": "EUR"
+  }
+}</con:responseContent></con:response></con:restMockAction><con:restMockAction name="/instructors" method="POST" resourcePath="/instructors" id="0b306044-0971-44a0-9d7c-354eaaa0e1ac"><con:settings/><con:defaultResponse xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchPath>/*&#13;
+// Script dispatcher is used to select a response based on the incoming request.&#13;
+// Here are few examples showing how to match based on path, query param, header and body&#13;
+&#13;
+// Match based on path&#13;
+def requestPath = mockRequest.getPath()&#13;
+log.info "Path: "+ requestPath&#13;
+&#13;
+if( requestPath.contains("json") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "JSON Response"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on query parameter&#13;
+def queryString = mockRequest.getRequest().getQueryString()&#13;
+log.info "QueryString: " + queryString&#13;
+&#13;
+if( queryString.contains("stockholm") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response Stockholm"&#13;
+}&#13;
+else if( queryString.contains("london") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response London"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on header&#13;
+def acceptEncodingHeaderList = mockRequest.getRequestHeaders().get("Accept-Encoding")&#13;
+log.info "AcceptEncoding Header List: " + acceptEncodingHeaderList&#13;
+&#13;
+if( acceptEncodingHeaderList.contains("gzip,deflate") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "GZiped Response"&#13;
+}&#13;
+&#13;
+&#13;
+// Match based on body&#13;
+def requestBody = mockRequest.getRequestContent()&#13;
+log.info "Request body: " + requestBody&#13;
+&#13;
+if( requestBody.contains("some data") )&#13;
+{&#13;
+    // return the name of the response you want to dispatch&#13;
+    return "Response N"&#13;
+}&#13;
+*/&#13;
+</con:dispatchPath><con:response name="Response 1" id="1c1a7698-6dbd-423e-b6c0-41d2bda9a9c1" httpResponseStatus="201" mediaType="application/json"><con:settings/><con:responseContent>{
+  "id": 1,
+  "fullName": "John Doe",
+  "course": {
+    "id": 101,
+    "title": "Mathematics"
+  },
+  "wage": {
+    "total": 55000,
+    "currency": "USD"
+  }
+}</con:responseContent></con:response></con:restMockAction></con:restMockService><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
