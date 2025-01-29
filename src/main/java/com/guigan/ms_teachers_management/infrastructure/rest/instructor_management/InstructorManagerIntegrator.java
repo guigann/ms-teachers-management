@@ -44,10 +44,14 @@ public class InstructorManagerIntegrator implements InstructorManagerPortOut {
             var response = feign.getById(authorization, origin, id);
             log.info("[ADAPTER OUT - TeacherManagerIntegrator.getbyId] - Chamada a operacao getbyId da API Teachers Management realizada com sucesso");
 
+            if (response.getId() == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found");
+            }
+
             return instructorToTeacherOutputMapper.responseGetTeacher(response);
         } catch (FeignException e) {
             log.error("[ADAPTER OUT - TeacherManagerIntegrator.getbyId] - Falha na chamada da operacao getbyId da API Teachers Management. Erro: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found");
+            throw new RuntimeException("Falha na chamada da operacao get da API Teachers Management. Cause: {}", e.getCause());
         }
     }
 
