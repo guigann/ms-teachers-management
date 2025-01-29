@@ -26,7 +26,7 @@ docker-compose -f docker-compose.yml up
 ```
 > **Note:** Make sure to run the above commands in the **project root directory**.
 4. Mock the Instructors Service with SoapUI. Follow the steps bellow:
-   1. Create the Mock Service like this:
+   1. Create the Mock Service like this ([ProviderMockService.xml](ProviderMockService.xml)):
       <br /> ![img](https://github.com/user-attachments/assets/29b26efb-01fe-4910-8c58-802b84253f1a)<br />
    2. Provide valids responses to all endpoints according to Swagger.
 
